@@ -1,8 +1,9 @@
 // src/db/schema.ts
 import {
-  pgTable, varchar, integer, timestamp, boolean, numeric, text
+  pgTable, varchar, integer, timestamp, boolean, numeric, text, jsonb
 } from "drizzle-orm/pg-core";
 
+// ── Core ──────────────────────────────────────────────────────────────────────
 export const customers = pgTable("customers", {
   id: varchar("id", { length: 26 }).primaryKey(),
   fullName: varchar("full_name", { length: 120 }).notNull(),
@@ -56,4 +57,17 @@ export const payments = pgTable("payments", {
   type: varchar("type", { length: 20 }).notNull(), // deposit|rental|refund
   status: varchar("status", { length: 20 }).default("pending").notNull(), // pending|success|failed
   paidTs: timestamp("paid_ts", { withTimezone: false })
+});
+
+// ── Inspections: at check-out / check-in ──────────────────────────────────────
+export const inspections = pgTable("inspections", {
+  id: varchar("id", { length: 26 }).primaryKey(),
+  bookingId: varchar("booking_id", { length: 26 }).notNull(),
+  type: varchar("type", { length: 20 }).notNull(), // checkout|checkin
+  odoKm: integer("odo_km").notNull(),
+  fuelLevel: varchar("fuel_level", { length: 10 }).notNull(), // e.g. "7/8", "1/2"
+  photos: jsonb("photos").$type<string[]>().default([]).notNull(), // array of urls/base64 placeholders
+  checklist: jsonb("checklist").$type<Record<string, boolean>>().default({}).notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull()
 });
