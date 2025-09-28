@@ -8,6 +8,7 @@ import { health } from "./routes/health";
 import { vehiclesRouter } from "./routes/vehicles";
 import { ratePlansRouter } from "./routes/rateplans";
 import { bookingsRouter } from "./routes/bookings";
+import { paymentsRouter } from "./routes/payments";
 import { pool } from "./db/drizzle";
 
 const app = express();
@@ -20,6 +21,7 @@ app.use("/health", health);
 app.use("/api/vehicles", vehiclesRouter);
 app.use("/api/rate-plans", ratePlansRouter);
 app.use("/api/bookings", bookingsRouter);
+app.use("/api/payments", paymentsRouter);
 
 app.use((err: any, _req: any, res: any, _next: any) => {
   console.error(err);
